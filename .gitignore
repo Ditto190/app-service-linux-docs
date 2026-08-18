@@ -328,3 +328,10 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+# Maven build output
+target/
+
+# Python virtual environments
+venv/
+.venv/
