@@ -158,60 +158,6 @@ public class Client
       // Receiving happens asynchronously
       finishLatch.await(1, java.util.concurrent.TimeUnit.MINUTES);
       
-      System.out.println("Press any key to CONTINUE");
-      System.in.read();
-      System.out.println("");
-
-
-      /// BIDIRECTIONAL STREAMING
-      System.out.println("Bidirectional streaming (many requests, many responses)");
-      System.in.read();
-      Thread.sleep(1000);
-      
-      final CountDownLatch finishLatchBidi = new CountDownLatch(1);
-      StreamObserver<HelloRequest> requestObserverBidi = asyncStub.sayHelloBidirectional(new StreamObserver<HelloRequest>() {
-        @Override
-        public void onNext(HelloRequest request) {
-          System.out.println("Received: " + request.getName());
-        }
-
-        @Override
-        public void onError(Throwable t) {
-          error("Error: " + Status.fromThrowable(t));
-          finishLatchBidi.countDown();
-        }
-
-        @Override
-        public void onCompleted() {
-          finishLatchBidi.countDown();
-        }
-      });
-
-      try {
-        HelloRequest[] requestsBidi = {
-          HelloRequest.newBuilder().setName("John").build(),
-          HelloRequest.newBuilder().setName("Doe").build(),
-          HelloRequest.newBuilder().setName("Smith").build(),
-          HelloRequest.newBuilder().setName("Bob").build()
-        };
-
-        for(HelloRequest request : requestsBidi) {
-          System.out.println("Sending: " + request.getName());
-          requestObserverBidi.onNext(request);
-          Thread.sleep(1000);
-        }
-      } catch (RuntimeException e) {
-        // Cancel RPC
-        requestObserverBidi.onError(e);
-        throw e;
-      }
-
-      // Mark the end of requests
-      requestObserverBidi.onCompleted();
-
-      // Receiving happens asynchronously
-      finishLatchBidi.await(1, java.util.concurrent.TimeUnit.MINUTES);
-
       System.out.println("");
       System.out.println("Press any key to EXIT");
       System.in.read();
